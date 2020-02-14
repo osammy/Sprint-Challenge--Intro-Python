@@ -1,6 +1,14 @@
 # Create a class to hold a city location. Call the class "City". It should have
 # fields for name, lat and lon (representing latitude and longitude).
 
+from inputParser import inputParser
+
+class City:
+  def __init__(self, name, lat, lon):
+    self.name = name
+    self.lat = lat
+    self.lon = lon
+
 
 # We have a collection of US cities with population over 750,000 stored in the
 # file "cities.csv". (CSV stands for "comma-separated values".)
@@ -20,6 +28,17 @@ def cityreader(cities=[]):
   # TODO Implement the functionality to read from the 'cities.csv' file
   # For each city record, create a new City instance and add it to the 
   # `cities` list
+  import csv
+
+  with open('src/cityreader/cities.csv') as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=',')
+    line_count = 0
+    for row in csv_reader:
+        if line_count > 0:
+            cities.append( City(row[0], float(row[3]), float(row[4])) )
+        line_count += 1
+
+    # print(f'Processed {line_count} lines.')
     
     return cities
 
@@ -27,7 +46,7 @@ cityreader(cities)
 
 # Print the list of cities (name, lat, lon), 1 record per line.
 for c in cities:
-    print(c)
+    print(c.name, c.lat, c.lon)
 
 # STRETCH GOAL!
 #
@@ -60,12 +79,29 @@ for c in cities:
 
 # TODO Get latitude and longitude values from the user
 
+input1 = input("\nEnter lat1,lon1 (ex 45,-100) : ")
+input2 = input("\nEnter lat2,lon2 (ex 32,-120) : ")
+lat1, lon1 = inputParser(input1)
+lat2, lon2 = inputParser(input2)
+
+
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
+
+  max_lat = max(lat1,lat2)
+  max_lon = max(lon1, lon2)
+  min_lat = min(lat1,lat2)
+  min_lon = min(lon1, lon2)
+    
+
   # within will hold the cities that fall within the specified region
   within = []
 
-  # TODO Ensure that the lat and lon valuse are all floats
+  # TODO Ensure that the lat and lon values are all floats
   # Go through each city and check to see if it falls within 
   # the specified coordinates.
+  
+  for city in cities:
+    if min_lat <= city.lat <= max_lat and min_lon <= city.lon <= max_lon:
+      within.append(city)
 
   return within
